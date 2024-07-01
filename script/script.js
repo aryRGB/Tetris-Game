@@ -1,8 +1,8 @@
-//making the sqoares
+//making the squares
 const gamescreen= document.getElementById("grid");
 for(let i=0;i<210;i++){
     let box= document.createElement("div");
-    box.className="square";        //!!!!!!!!!!!!!!!!! have to className, not class
+    box.className="square";        
     gamescreen.appendChild(box);
     if(i>=200){
         box.classList.add("end");
@@ -15,9 +15,7 @@ for(let i=0;i<210;i++){
         box.classList.add("rightwall")
     }
 }
-
 let sqarray=Array.from(document.querySelectorAll(".square"));
-
 
 //creating tetrominoes
 
@@ -71,9 +69,9 @@ let rnd=Math.random();
 let tStyle=Math.floor(rnd*7);
 let frnd=Math.random()
 let tConfig=Math.floor(rnd*4);
-//intial settings
 let currentTetromino=tetrominoes[tStyle][tConfig];
 let currentPosition=5;
+
 //next tetromino
 rnd=Math.random();
 let nexttStyle=Math.floor(rnd*7);
@@ -141,24 +139,24 @@ function refreshNext(){
             break;
     }
 }
-console.log(nxtArray)
 
 //main functions
+const tetrominoColors=["blue","green","red","yellow","cyan","purple","orange"]
 function color(){
     currentTetromino.forEach(element => {
         sqarray[currentPosition+element].classList.add("colored")
+        sqarray[currentPosition+element].style.backgroundColor=tetrominoColors[tStyle]
     });
 }
 
 function uncolor(){
     currentTetromino.forEach(element => {
         sqarray[currentPosition+element].classList.remove("colored")
+        sqarray[currentPosition+element].style.backgroundColor="transparent"
     });
 }
 
-
 //make the block fall
-
 function down(){
     uncolor()
     currentPosition +=10;
@@ -166,19 +164,14 @@ function down(){
     stop()
 }
 
-// intervalId= setInterval(down , 1000);
-
 //stopping the block when it reaches the end
-//////check if next line is end
 function isAtEnd(element){
     return sqarray[currentPosition+ element+ 10].classList.contains("end");
 }
-//////turn currentTetromino to end block
 function makeEnd(element){
     sqarray[currentPosition+ element].classList.add("end")
 }
 function stop(){
-    //array.some(callbackFxn)   syntax. array is the array who's elements have to be checked
     if(currentTetromino.some(blockPosition => isAtEnd(blockPosition))){
         currentTetromino.forEach(blockPosition => makeEnd(blockPosition))
         //start new tetromino
@@ -190,9 +183,9 @@ function stop(){
         nexttStyle=Math.floor(rnd*7);
         frnd=Math.random();
         nexttConfig=Math.floor(rnd*4);
+
         refreshNext()
         score()
-        //set initial values
         currentPosition=5
         color()
         gameOver()
@@ -275,6 +268,7 @@ document.addEventListener('keydown', (e)=>{
 //start button and score
 const scoreDisplay=document.getElementById("current-score");
 const start=document.getElementById("start-button");
+const gameOverDisplay=document.getElementById("gameover")
 let currentScore=0
 let intervalId =0
 start.addEventListener("click", () => {
@@ -299,16 +293,21 @@ function score(){
           row.forEach(element => {
             sqarray[element].classList.remove("end")
             sqarray[element].classList.remove("colored")
+            sqarray[element].style.backgroundColor ='transparent'
           })
           const Removed = sqarray.splice(i, 10)
+          
           sqarray = Removed.concat(sqarray)
           sqarray.forEach(element => grid.appendChild(element))
         }
     }
+    
 }
+scoreDisplay.innerHTML=currentScore
 
 function gameOver(){
-    if(currentTetromino.some(element=> sqarray[currentPosition+element].classList.contains("end"))){
-        scoreDisplay.innerHTML= "game over"
+    if(currentTetromino.some(element=> sqarray[currentPosition+element+10].classList.contains("end"))){
+        gameOverDisplay.innerHTML= "Game Over"
+        clearInterval(intervalId)
     } 
 }
