@@ -1,8 +1,8 @@
-//making the sqoares
+//making the squares
 const gamescreen= document.getElementById("grid");
 for(let i=0;i<210;i++){
     let box= document.createElement("div");
-    box.className="square";        //!!!!!!!!!!!!!!!!! have to className, not class
+    box.className="square";        
     gamescreen.appendChild(box);
     if(i>=200){
         box.classList.add("end");
